@@ -1,0 +1,41 @@
+---
+- name: "Openstack Meetup #3: Prepare host"
+  hosts: all
+  tasks:
+   - name: "Install Dynamic Kernel Module Support for VirtualBox Guest Additions"
+     yum: 
+      name: "dkms"
+      state:  latest
+     with_items:
+      - dkms
+      - gcc
+      - kernel-devel
+   - name: "Update all packages"
+     yum: 
+      name: '*'
+      state:  latest
+   - name: "Disable services"
+     service:
+      name: "{{ item }}"
+      state:  stopped
+      enabled: no
+     with_items:
+      - firewalld
+      - NetworkManager
+   - name: "Enable services"
+     service:
+      name: "{{ item }}"
+      state:  started
+      enabled: yes
+     with_items:
+      - network
+   - name: "Set timezone to Asia/Bangkok"
+     timezone:
+      name: Asia/Bangkok
+   - name: "Mount VirtualBox AddOn"
+     command: mount /vagrant/VBoxGuestAdditions_5.1.14.iso /mnt
+   - name: "Install VirtualBox AddOn"
+     command: /mnt/VBoxLinuxAdditions.run
+   - name: "Umount VirtualBox AddOn"
+     command: umount /mnt
+

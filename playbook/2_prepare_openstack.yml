@@ -1,0 +1,15 @@
+---
+- name: "Openstack Meetup #4: Prepare host"
+  hosts: all
+  tasks:
+   - name: "Install openstack-newton repos"
+     yum: 
+      name: "{{ item }}"
+      state:  present
+     with_items:
+      - "centos-release-openstack-newton"
+      - "net-tools"
+   - name: "Update all packages"
+     yum: 
+      name: '*'
+      state:  latest
